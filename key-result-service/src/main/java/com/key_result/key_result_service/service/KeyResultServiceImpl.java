@@ -6,13 +6,23 @@ import com.key_result.key_result_service.exception.ResourceNotFoundException;
 import com.key_result.key_result_service.repository.KeyResultRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class KeyResultServiceImpl implements KeyResultService {
+
+    // Logger instance for logging important events and errors
+    private static final Logger LOGGER = LoggerFactory.getLogger(KeyResultServiceImpl.class);
 
     // Injecting the KeyResultRepository to interact with the database
     private final KeyResultRepository keyResultRepository;
@@ -20,7 +30,7 @@ public class KeyResultServiceImpl implements KeyResultService {
     // Defining the TASK_SERVICE_URL to interact with Task Service via HTTP
     private final static String TASK_SERVICE_URL = "http://localhost:8083/api/tasks/";
 
-    // Constructor-based injection for KeyResultRepository
+    // Constructor-based dependency injection for KeyResultRepository
     @Autowired
     public KeyResultServiceImpl(KeyResultRepository keyResultRepository) {
         this.keyResultRepository = keyResultRepository;
@@ -30,70 +40,151 @@ public class KeyResultServiceImpl implements KeyResultService {
     @Autowired
     private RestTemplate restTemplate;
 
-    // Method to add a new KeyResult to the database
+    /**
+     * Adds a new KeyResult to the database.
+     * Logs the operation and returns the saved KeyResult instance.
+     *
+     * @param keyResult The KeyResult object to be added.
+     * @return The saved KeyResult object.
+     */
     @Override
     public KeyResult addKeyResult(KeyResult keyResult) {
-        // Saves the provided KeyResult object and returns the saved instance
+        LOGGER.info("Adding a new KeyResult: {}", keyResult);
         return keyResultRepository.save(keyResult);
     }
 
-    // Method to get all KeyResults from the database
+    /**
+     * Retrieves all KeyResults from the database.
+     * Logs the retrieval process.
+     *
+     * @return A list of all KeyResults.
+     */
     @Override
     public List<KeyResult> getAllKeyResult() {
-        // Retrieves all KeyResults from the repository
-        return keyResultRepository.findAll();
+        LOGGER.info("Fetching all KeyResults from the database.");
+        List<KeyResult> keyResults = keyResultRepository.findAll();
+
+        for (KeyResult keyResult : keyResults) {
+            Long keyResultId = keyResult.getKeyResultId();
+
+            try {
+                // Fetch Tasks from Task service using the objective ID
+                String taskUrl = TASK_SERVICE_URL + "keyresult/" + keyResultId;
+                List<Task> tasks = Optional.ofNullable(
+                        restTemplate.getForObject(taskUrl, Task[].class)
+                ).map(Arrays::asList).orElse(Collections.emptyList());
+                keyResult.setKeyResultAssociatedTasks(tasks);
+
+            } catch (RestClientException e) {
+                // Log error if there's an issue while fetching data from external services
+                LOGGER.error("Error fetching data for Objective ID: " + keyResultId + " - " + e.getMessage());
+
+            }
+        }
+
+        return keyResults;
     }
 
-    // Method to get a specific KeyResult by its ID
+    /**
+     * Retrieves a specific KeyResult by its ID.
+     * Logs the retrieval process and throws an exception if not found.
+     *
+     * @param id The ID of the KeyResult to be retrieved.
+     * @return The retrieved KeyResult.
+     */
     @Override
     public KeyResult getKeyResult(Long id) {
-        // Tries to fetch the KeyResult by ID, throws exception if not found
-        return keyResultRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("KeyResult not found with id: " + id));
+        LOGGER.info("Fetching KeyResult with ID: {}", id);
+
+        KeyResult keyResult = keyResultRepository.findById(id)
+                .orElseThrow(() -> {
+                    LOGGER.error("KeyResult not found with ID: {}", id);
+                    return new ResourceNotFoundException("KeyResult not found with id: " + id);
+                });
+
+        try {
+            // Fetch Tasks from Task service
+            String taskUrl = TASK_SERVICE_URL + "keyresult/" + id;
+            List<Task> tasks = Optional.ofNullable(
+                    restTemplate.getForObject(taskUrl, Task[].class)
+            ).map(Arrays::asList).orElse(Collections.emptyList());
+
+            keyResult.setKeyResultAssociatedTasks(tasks);
+
+        } catch (RestClientException e) {
+            LOGGER.error("Error fetching tasks for KeyResult ID {}: {}", id, e.getMessage(), e);
+        }
+
+        return keyResult;
     }
 
-    // Method to fetch all KeyResults associated with a given Objective ID
+
+    /**
+     * Retrieves all KeyResults associated with a given Objective ID.
+     * Logs the retrieval process and throws an exception if none are found.
+     *
+     * @param objectiveId The Objective ID to filter KeyResults.
+     * @return A list of KeyResults linked to the given Objective ID.
+     */
     @Override
     public List<KeyResult> getKeyResultsByObjectiveId(Long objectiveId) {
-        // Retrieves KeyResults linked to the provided Objective ID from the repository
+        LOGGER.info("Fetching KeyResults for Objective ID: {}", objectiveId);
         List<KeyResult> keyResults = keyResultRepository.findKeyResultByAssociatedObjectiveId(objectiveId);
-        // If no KeyResults are found, throw a ResourceNotFoundException
         if (keyResults.isEmpty()) {
+            LOGGER.warn("No KeyResults found for Objective ID: {}", objectiveId);
             throw new ResourceNotFoundException("No KeyResults found for Objective ID: " + objectiveId);
         }
         return keyResults;
     }
 
-    // Method to update an existing KeyResult
+    /**
+     * Updates an existing KeyResult with new data.
+     * Logs the update process and throws an exception if the KeyResult is not found.
+     *
+     * @param id The ID of the KeyResult to be updated.
+     * @param updatedKeyResult The updated KeyResult object containing new values.
+     * @return The updated KeyResult.
+     */
     @Override
     public KeyResult updateKeyResult(Long id, KeyResult updatedKeyResult) {
-        // Checks if the KeyResult exists and updates it with new data
+        LOGGER.info("Updating KeyResult with ID: {}", id);
         return keyResultRepository.findById(id)
                 .map(existingKeyResult -> {
-                    // Update each field of the existing KeyResult with the new values
+                    LOGGER.info("Existing KeyResult found. Updating fields...");
                     existingKeyResult.setKeyResultName(updatedKeyResult.getKeyResultName());
                     existingKeyResult.setKeyResultOwnerId(updatedKeyResult.getKeyResultOwnerId());
                     existingKeyResult.setAssociatedObjectiveId(updatedKeyResult.getAssociatedObjectiveId());
                     existingKeyResult.setKeyResultAssociatedTasksId(updatedKeyResult.getKeyResultAssociatedTasksId());
                     existingKeyResult.setKeyResultAssociatedTasks(updatedKeyResult.getKeyResultAssociatedTasks());
                     existingKeyResult.setKeyResultDueDate(updatedKeyResult.getKeyResultDueDate());
-                    // Save the updated KeyResult to the database
+
+                    LOGGER.info("Saving updated KeyResult...");
                     return keyResultRepository.save(existingKeyResult);
                 })
-                .orElseThrow(() -> new ResourceNotFoundException("KeyResult not found with id: " + id));
+                .orElseThrow(() -> {
+                    LOGGER.error("KeyResult not found with ID: {}", id);
+                    return new ResourceNotFoundException("KeyResult not found with id: " + id);
+                });
     }
 
-    // Method to remove a KeyResult by its ID
+    /**
+     * Removes a KeyResult by its ID.
+     * Logs the deletion process and throws an exception if the KeyResult is not found.
+     *
+     * @param id The ID of the KeyResult to be deleted.
+     */
     @Override
     public void removeKeyResult(Long id) {
-        // Checks if the KeyResult exists before trying to delete it
+        LOGGER.info("Attempting to delete KeyResult with ID: {}", id);
         if (!keyResultRepository.existsById(id)) {
+            LOGGER.error("KeyResult not found with ID: {}. Deletion aborted.", id);
             throw new ResourceNotFoundException("KeyResult not found with id: " + id);
         }
-        // Deletes the KeyResult from the database
         keyResultRepository.deleteById(id);
+        LOGGER.info("Successfully deleted KeyResult with ID: {}", id);
     }
 }
+
 
 
 

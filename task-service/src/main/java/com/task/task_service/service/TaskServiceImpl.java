@@ -1,14 +1,19 @@
 package com.task.task_service.service;
 
+import com.task.task_service.entity.Notification;
 import com.task.task_service.entity.Task;
 import com.task.task_service.exception.ResourceNotFoundException;
 import com.task.task_service.repository.TaskRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Implementation of the TaskService interface to manage task operations.
@@ -19,6 +24,7 @@ import java.util.List;
 public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
+    private final SimpMessagingTemplate messagingTemplate; // Inject WebSocket messaging
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskServiceImpl.class);
 
     /**
@@ -27,8 +33,9 @@ public class TaskServiceImpl implements TaskService {
      * @param taskRepository Repository interface for task-related database operations.
      */
     @Autowired
-    public TaskServiceImpl(TaskRepository taskRepository) {
+    public TaskServiceImpl(TaskRepository taskRepository, SimpMessagingTemplate messagingTemplate) {
         this.taskRepository = taskRepository;
+        this.messagingTemplate = messagingTemplate;
     }
 
     /**
@@ -91,6 +98,7 @@ public class TaskServiceImpl implements TaskService {
                     existingTask.setTaskIsActive(taskToUpdate.isTaskIsActive());
                     existingTask.setTaskAssociatedKeyResult(taskToUpdate.getTaskAssociatedKeyResult());
                     existingTask.setTaskAssociatedObjective(taskToUpdate.getTaskAssociatedObjective());
+                    existingTask.setTaskStatus(taskToUpdate.getTaskStatus());
                     LOGGER.info("Task with ID: {} updated successfully.", taskId);
                     return taskRepository.save(existingTask); // Save updated task
                 })
@@ -121,6 +129,53 @@ public class TaskServiceImpl implements TaskService {
         List<Task> allByTaskAssociatedObjective = taskRepository.findAllByTaskAssociatedObjective(objectiveId);
         return allByTaskAssociatedObjective;
     }
+
+    @Override
+    public List<Task> getAlltaskWithKeyResultId(Long keyresultId){
+        LOGGER.info("Fetching all the tasks associated with keyresultId: {}",keyresultId);
+        List<Task> allByTaskAssociatedKeyResult = taskRepository.findAllByTaskAssociatedKeyResult(keyresultId);
+        return allByTaskAssociatedKeyResult;
+    }
+
+    @Override
+    public List<Task> getAlltaskWithUserId(Long userId){
+        LOGGER.info("Fetching all the tasks associated with keyresultId: {}",userId);
+        List<Task> allByTaskAssociatedToUser = taskRepository.findAllByTaskOwner(userId);
+        return allByTaskAssociatedToUser;
+    }
+
+    @Override
+    public String approveTask(Long taskId) {
+        Optional<Task> optionalTask = taskRepository.findById(taskId);
+
+        if (optionalTask.isPresent()) {
+            Task task = optionalTask.get();
+            task.setTaskIsActive(false);
+            taskRepository.save(task);
+
+            // Send Notification via WebSocket
+            Notification notification = new Notification(
+                    "Task '" + task.getTaskHeading() + "' has been approved and marked as completed.",
+                    "TASK_APPROVED",
+                    task.getTaskOwner().toString(), // Send to the task owner
+                    LocalDateTime.now()
+            );
+
+            messagingTemplate.convertAndSend("/topic/notifications", notification);
+            return "Task Approved Successfully!";
+        } else {
+            return "Task not found!";
+        }
+    }
+
+    public List<Task> getAllActiveTasksWithUserId(Long userId) {
+        LOGGER.info("Fetching all the active tasks associated with userId: {}", userId);
+        return taskRepository.findAllByTaskOwner(userId)
+                .stream()
+                .filter(Task::isTaskIsActive)
+                .collect(Collectors.toList());
+    }
+
 
 
 }

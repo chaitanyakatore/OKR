@@ -31,6 +31,7 @@ public class KeyResult {
     @Temporal(TemporalType.TIMESTAMP)
     private Date keyResultDueDate;
 
+    //GETTERS AND SETTERS
     public Long getKeyResultId() {
         return keyResultId;
     }

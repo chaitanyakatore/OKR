@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface ObjectiveRepository extends JpaRepository<Objective, Long> {
     List<Objective> findByMappedProject(Long projectId);
+    List<Objective> findAllByObjectiveIsActiveTrueAndObjectiveTaskIdsIn(List<Long> taskIds);
+
 }

@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * Controller class for handling HTTP requests related to Task operations.
- * Provides RESTful APIs for CRUD operations on tasks.
+ * Provides RESTful APIs for operations on tasks.
  */
 @RestController
 @RequestMapping("/api/tasks") // Base URL for task-related endpoints
@@ -100,7 +100,50 @@ public class TaskController {
     public ResponseEntity<List<Task>> getAllTaskByObjective(@PathVariable  Long objectiveId){
         List<Task> allTasksOfObjective = taskService.getAllTaskWithObjectiveId(objectiveId);
         return ResponseEntity.ok(allTasksOfObjective);
+    }
 
+    @GetMapping("/keyresult/{keyresultId}")
+    public ResponseEntity<List<Task>> getAllTaskByKeyresult(@PathVariable  Long keyresultId){
+        List<Task> allTasksOfKeyResult = taskService.getAlltaskWithKeyResultId(keyresultId);
+        return ResponseEntity.ok(allTasksOfKeyResult);
+    }
+
+    /**
+     * API to get all task by  userID.
+     *
+     * @param userId ID of the user to get all task assigned.
+     * @return ResponseEntity with HTTP status indicating success or failure.
+     */
+    @GetMapping("/users/{userId}")
+    public ResponseEntity<List<Task>> getAllTaskByUserId(@PathVariable  Long userId){
+        List<Task> allTasksOfUser = taskService.getAlltaskWithUserId(userId);
+        return ResponseEntity.ok(allTasksOfUser);
+    }
+
+    /**
+     * API to get all active task by  userID.
+     *
+     * @param userId ID of the user to get active tasks.
+     * @return ResponseEntity with HTTP status indicating success or failure.
+     */
+    @GetMapping("/active-task/users/{userId}")
+    public ResponseEntity<List<Task>> getAllActiveTaskByUserId(@PathVariable  Long userId){
+        List<Task> allActiveTasksOfUser = taskService.getAllActiveTasksWithUserId(userId);
+        return ResponseEntity.ok(allActiveTasksOfUser);
+    }
+
+
+    /**
+     * API to aprrove a task by its ID.
+     *
+     * @param taskId ID of the task to approve.
+     * @return ResponseEntity with HTTP status indicating success or failure.
+     */
+    @PutMapping("/{taskId}/approve")
+    public ResponseEntity<String> approveTask(@PathVariable Long taskId) {
+        LOGGER.info("approving the task with taskId "+ taskId);
+        taskService.approveTask(taskId);
+        return ResponseEntity.ok("task is approved");
     }
 
 }

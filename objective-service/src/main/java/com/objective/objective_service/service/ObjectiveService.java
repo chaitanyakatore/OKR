@@ -13,4 +13,5 @@ public interface ObjectiveService {
     public void removeObjective(Long objectiveId);
     public List<Objective> getAllObjectiveByProjectId(Long projectId);
     public double getProgress(Long projectId);
+    public List<Objective> getActiveObjectivesByTaskIds(List<Long> taskIds);
 }

@@ -104,4 +104,18 @@ public class ObjectiveController {
         Double projectProgress = objectiveService.getProgress(projectId);
         return ResponseEntity.ok(projectProgress);
     }
+
+    /**
+     * Endpoint to calculate and fetch the progress of a project based on its objectives.
+     * @param projectId - The ID of the project.
+     * @return ResponseEntity containing the project progress (percentage) and HTTP status 200 (OK).
+     */
+    @GetMapping("/project/progress/{projectId}")
+    public ResponseEntity<Double> getActiveObjectiveByTaskId(@PathVariable List projectId) {
+        LOGGER.info("Fetching objective with project associated with projectID: {}", projectId);
+        Double projectProgress = objectiveService.getProgress(projectId);
+        return ResponseEntity.ok(projectProgress);
+    }
+
+
 }

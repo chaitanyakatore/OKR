@@ -1,6 +1,7 @@
 package com.task.task_service.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.task.task_service.constants.TaskStatus;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -32,6 +33,7 @@ public class Task {
     private boolean taskIsActive;
     private Long taskAssociatedKeyResult;
     private Long taskAssociatedObjective;
+    private TaskStatus taskStatus;
 
     public Long getTaskId() {
         return taskId;
@@ -111,5 +113,13 @@ public class Task {
 
     public void setTaskAssociatedObjective(Long taskAssociatedObjective) {
         this.taskAssociatedObjective = taskAssociatedObjective;
+    }
+
+    public TaskStatus getTaskStatus() {
+        return taskStatus;
+    }
+
+    public void setTaskStatus(TaskStatus taskStatus) {
+        this.taskStatus = taskStatus;
     }
 }

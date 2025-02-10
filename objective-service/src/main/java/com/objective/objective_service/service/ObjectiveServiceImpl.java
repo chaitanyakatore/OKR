@@ -41,7 +41,10 @@ public class ObjectiveServiceImpl implements ObjectiveService {
     @Autowired
     private RestTemplate restTemplate;
 
-    // Fetches all objectives from the database along with associated KeyResults and Tasks from respective services
+    /**
+     * Retrieves all objectives from the database and fetches associated key results and tasks.
+     * @return List of all objectives with related key results and tasks.
+     */
     @Override
     public List<Objective> getAllObjective() {
         LOGGER.info("Fetching all objectives from the database...");
@@ -79,7 +82,11 @@ public class ObjectiveServiceImpl implements ObjectiveService {
         return objectives;
     }
 
-    // Fetches a specific objective by its ID, along with related KeyResults and Tasks
+    /**
+     * Retrieves an objective by its ID and fetches associated key results and tasks.
+     * @param id Objective ID
+     * @return Objective object with related key results and tasks.
+     */
     @Override
     public Objective getObjective(Long id) {
         LOGGER.info("Fetching objective with ID: " + id);
@@ -129,7 +136,11 @@ public class ObjectiveServiceImpl implements ObjectiveService {
         return objective;
     }
 
-    // Creates a new objective and persists it to the database
+    /**
+     * Creates a new objective and saves it to the database.
+     * @param obj Objective object to be created.
+     * @return The saved Objective.
+     */
     @Override
     public Objective createObjective(Objective obj) {
         LOGGER.info("Creating a new objective...");
@@ -138,7 +149,12 @@ public class ObjectiveServiceImpl implements ObjectiveService {
         return objectiveRepository.save(obj);
     }
 
-    // Updates an existing objective identified by its ID
+    /**
+     * Updates an existing objective with new data.
+     * @param objectiveToUpdate Updated objective data.
+     * @param objectiveId ID of the objective to update.
+     * @return Updated Objective.
+     */
     @Override
     public Objective updateObjective(Objective objectiveToUpdate, Long objectiveId) {
         LOGGER.info("Updating objective with ID: " + objectiveId);
@@ -168,7 +184,10 @@ public class ObjectiveServiceImpl implements ObjectiveService {
         return updatedObjective;
     }
 
-    // Removes an objective identified by its ID from the database
+    /**
+     * Deletes an objective by its ID.
+     * @param objectiveId ID of the objective to be deleted.
+     */
     @Override
     public void removeObjective(Long objectiveId) {
         LOGGER.info("Removing objective with ID: " + objectiveId);
@@ -178,7 +197,11 @@ public class ObjectiveServiceImpl implements ObjectiveService {
         objectiveRepository.deleteById(objectiveId);
     }
 
-    // Fetches all objectives associated with a specific project
+    /**
+     * Retrieves all objectives associated with a specific project.
+     * @param projectId ID of the project.
+     * @return List of objectives mapped to the project.
+     */
     @Override
     public List<Objective> getAllObjectiveByProjectId(Long projectId) {
         LOGGER.info("Fetching all objectives for projectID: " + projectId);
@@ -187,7 +210,11 @@ public class ObjectiveServiceImpl implements ObjectiveService {
         return objectiveRepository.findByMappedProject(projectId);
     }
 
-    // Calculates the progress of all objectives within a project
+    /**
+     * Calculates the progress of a project based on completed tasks in its objectives.
+     * @param projectId ID of the project.
+     * @return Progress percentage of the project.
+     */
     @Override
     public double getProgress(Long projectId) {
         LOGGER.info("Fetching all objectives for project ID: " + projectId);
@@ -234,5 +261,13 @@ public class ObjectiveServiceImpl implements ObjectiveService {
         // Calculate the overall project progress as the average of all objectives' progress
         return totalObjectives > 0 ? totalProgress / totalObjectives : 0.0;
     }
+
+
+    // method to give the active objectives by taskId List
+    public List<Objective> getActiveObjectivesByTaskIds(List<Long> taskIds) {
+        LOGGER.info("Fetching active objectives for tasks: "+ taskIds);
+        return objectiveRepository.findAllByObjectiveIsActiveTrueAndObjectiveTaskIdsIn(taskIds);
+    }
+
 }
 

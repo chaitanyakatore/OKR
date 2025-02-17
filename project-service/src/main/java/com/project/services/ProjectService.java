@@ -47,11 +47,11 @@ public class ProjectService {
         project.setProjectDescription(projectDetails.getProjectDescription());
         project.setProjectPriority(projectDetails.getProjectPriority());
         project.setProjectStatus(projectDetails.getProjectStatus());
-        project.setIsActive(projectDetails.getIsActive());
+        project.setActive(projectDetails.getActive());
         project.setTeamsInvolvedId(projectDetails.getTeamsInvolvedId());
         project.setObjectiveId(projectDetails.getObjectiveId());
         project.setProjectDueDate(projectDetails.getProjectDueDate());
-        project.setProjectManager(projectDetails.getProjectManager());
+        project.setProjectManagerId(projectDetails.getProjectManagerId());
 
         return projectRepository.save(project);
     }
@@ -75,12 +75,22 @@ public class ProjectService {
         return projectRepository.countByIsActive(isActive);
     }
 
+
+    //get all the associated objective of that project
     public List<Objective> getAllObjectiveAssociatedWithProject(Long projectId){
         String url = OBJECTIVE_URL + projectId;
         List<Objective> allAssociatedObjective = Arrays.asList(
                 restTemplate.getForObject(url, Objective[].class)
         );
         return allAssociatedObjective;
+    }
+
+    //get all the objective give List of the projectIds;
+
+
+    //get how many project active from that project
+    public long getActiveProjectsCount(List<Long> projectIds) {
+        return projectRepository.countByProjectIdInAndIsActiveTrue(projectIds);
     }
     
 }

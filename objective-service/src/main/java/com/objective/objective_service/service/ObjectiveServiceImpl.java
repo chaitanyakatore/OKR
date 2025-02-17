@@ -10,10 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.logging.Logger;
 
 @Service
@@ -165,14 +162,12 @@ public class ObjectiveServiceImpl implements ObjectiveService {
 
         // Update the existing objective's fields with the new values
         existingObjective.setObjectiveName(objectiveToUpdate.getObjectiveName());
-        existingObjective.setObjectiveDescription(objectiveToUpdate.getObjectiveDescription());
         existingObjective.setMappedProject(objectiveToUpdate.getMappedProject());
-        existingObjective.setAssignedTo(objectiveToUpdate.getAssignedTo());
+        existingObjective.setAssignedToTeam(objectiveToUpdate.getAssignedToTeam());
         existingObjective.setKeyResultIds(objectiveToUpdate.getKeyResultIds());
         existingObjective.setKeyResult(objectiveToUpdate.getKeyResult());
         existingObjective.setObjectiveTaskIds(objectiveToUpdate.getObjectiveTaskIds());
         existingObjective.setObjectiveTaskList(objectiveToUpdate.getObjectiveTaskList());
-        existingObjective.setObjectiveStartDate(objectiveToUpdate.getObjectiveStartDate());
         existingObjective.setObjectiveDueDate(objectiveToUpdate.getObjectiveDueDate());
         existingObjective.setObjectiveStatus(objectiveToUpdate.getObjectiveStatus());
         existingObjective.setObjectiveIsActive(objectiveToUpdate.isObjectiveIsActive());
@@ -269,5 +264,33 @@ public class ObjectiveServiceImpl implements ObjectiveService {
         return objectiveRepository.findAllByObjectiveIsActiveTrueAndObjectiveTaskIdsIn(taskIds);
     }
 
+    /**
+     * Take all the objectives of given project along with active projects.
+     * @param projectIds List of the projects.
+     * @return Map of allObjective and activeObjectives.
+     */
+    @Override
+    public Map<String, List<Objective>> getObjectivesByProjects(List<Long> projectIds) {
+        List<Objective> allObjectives = objectiveRepository.findByMappedProjectIn(projectIds);
+        List<Objective> activeObjectives = objectiveRepository.findByMappedProjectInAndObjectiveIsActiveTrue(projectIds);
+
+        Map<String, List<Objective>> result = new HashMap<>();
+        result.put("allObjectives", allObjectives);
+        result.put("activeObjectives", activeObjectives);
+
+        return result;
+    }
+
+    /**
+     * Take the list of the projectIds and give all the objectives
+     * that are present in those projects
+     * @param projectIds List of the prokjectIds
+     * @return List of Ids of all the Objectives present in given projects
+     * */
+    public List<Objective> getAllObjectiveByProjectIds(List<Long> projectIds){
+        LOGGER.info("Fetching all the objectives for given projectIds");
+        List<Objective> allObjectives = objectiveRepository.findByMappedProjectIn(projectIds);
+        return allObjectives;
+    }
 }
 

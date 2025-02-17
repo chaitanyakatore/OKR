@@ -154,9 +154,13 @@ public class KeyResultServiceImpl implements KeyResultService {
                     existingKeyResult.setKeyResultName(updatedKeyResult.getKeyResultName());
                     existingKeyResult.setKeyResultOwnerId(updatedKeyResult.getKeyResultOwnerId());
                     existingKeyResult.setAssociatedObjectiveId(updatedKeyResult.getAssociatedObjectiveId());
+                    existingKeyResult.setCurrentVal(updatedKeyResult.getCurrentVal());
+                    existingKeyResult.setTargetVal(updatedKeyResult.getTargetVal());
+                    existingKeyResult.setKeyResultPriority(updatedKeyResult.getKeyResultPriority());
                     existingKeyResult.setKeyResultAssociatedTasksId(updatedKeyResult.getKeyResultAssociatedTasksId());
                     existingKeyResult.setKeyResultAssociatedTasks(updatedKeyResult.getKeyResultAssociatedTasks());
                     existingKeyResult.setKeyResultDueDate(updatedKeyResult.getKeyResultDueDate());
+                    existingKeyResult.setTeamId(updatedKeyResult.getTeamId());
 
                     LOGGER.info("Saving updated KeyResult...");
                     return keyResultRepository.save(existingKeyResult);
@@ -165,6 +169,7 @@ public class KeyResultServiceImpl implements KeyResultService {
                     LOGGER.error("KeyResult not found with ID: {}", id);
                     return new ResourceNotFoundException("KeyResult not found with id: " + id);
                 });
+
     }
 
     /**
@@ -183,6 +188,30 @@ public class KeyResultServiceImpl implements KeyResultService {
         keyResultRepository.deleteById(id);
         LOGGER.info("Successfully deleted KeyResult with ID: {}", id);
     }
+
+    /**
+     * Give all the keyResults by list of objectiveIds
+     * @param objectiveIds The Ids of the objectives to be fetch.
+     * @return List of KeyResults
+     */
+    @Override
+    public Map<String, List<KeyResult>> getKeyResultsByObjectiveIds(List<Long> objectiveIds) {
+        // Fetch all key results
+        List<KeyResult> allKeyResults = keyResultRepository.findByObjectiveIdIn(objectiveIds);
+
+        // Filter active key results (currVal < 100%)
+        List<KeyResult> activeKeyResults = allKeyResults.stream()
+                .filter(kr -> kr.getCurrentVal() < 100.0)
+                .toList();
+
+        // Return both lists in a map
+        Map<String, List<KeyResult>> result = new HashMap<>();
+        result.put("allKeyResults", allKeyResults);
+        result.put("activeKeyResults", activeKeyResults);
+
+        return result;
+    }
+
 }
 
 

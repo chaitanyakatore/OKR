@@ -46,14 +46,19 @@ public class User {
     @ElementCollection
     private List<Long> usertaskAssigned;
 
-    @Transient
-    private List<Task> userListOfTasksAssigned;
-
     @ElementCollection
-    private List<Team> userInvolvedTeams;
+    private List<Long> userInvolvedTeamsId;
 
     @ElementCollection
     private List<Long> userProject;
+
+    // for role based projectId list
+    @ElementCollection
+    private List<Long> userManagerProjectId;
+    @ElementCollection
+    private List<Long> userTeamLeaderProjectId;
+    @ElementCollection
+    private List<Long> userTeamMemberProjectId;
 
 
     //GETTERS AND SETTERS
@@ -153,13 +158,6 @@ public class User {
         this.usertaskAssigned = usertaskAssigned;
     }
 
-    public List<Task> getUserListOfTasksAssigned() {
-        return userListOfTasksAssigned;
-    }
-
-    public void setUserListOfTasksAssigned(List<Task> userListOfTasksAssigned) {
-        this.userListOfTasksAssigned = userListOfTasksAssigned;
-    }
 
     public List<Long> getUserProject() {
         return userProject;
@@ -169,12 +167,36 @@ public class User {
         this.userProject = userProject;
     }
 
-    public List<Team> getUserInvolvedTeams() {
-        return userInvolvedTeams;
+    public List<Long> getUserInvolvedTeamsId() {
+        return userInvolvedTeamsId;
     }
 
-    public void setUserInvolvedTeams(List<Team> userInvolvedTeams) {
-        this.userInvolvedTeams = userInvolvedTeams;
+    public void setUserInvolvedTeamsId(List<Long> userInvolvedTeamsId) {
+        this.userInvolvedTeamsId = userInvolvedTeamsId;
+    }
+
+    public List<Long> getUserManagerProjectId() {
+        return userManagerProjectId;
+    }
+
+    public void setUserManagerProjectId(List<Long> userManagerProjectId) {
+        this.userManagerProjectId = userManagerProjectId;
+    }
+
+    public List<Long> getUserTeamLeaderProjectId() {
+        return userTeamLeaderProjectId;
+    }
+
+    public void setUserTeamLeaderProjectId(List<Long> userTeamLeaderProjectId) {
+        this.userTeamLeaderProjectId = userTeamLeaderProjectId;
+    }
+
+    public List<Long> getUserTeamMemberProjectId() {
+        return userTeamMemberProjectId;
+    }
+
+    public void setUserTeamMemberProjectId(List<Long> userTeamMemberProjectId) {
+        this.userTeamMemberProjectId = userTeamMemberProjectId;
     }
 }
 

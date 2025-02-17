@@ -1,25 +1,14 @@
-package com.objective.objective_service.entity;
+package com.user.user_service.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.objective.objective_service.constants.ObjectiveStatus;
+import com.user.user_service.constants.ObjectiveStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.Date;
 import java.util.List;
 
-@Entity
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Table(name = "objective")
 public class Objective {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long objectiveId;
     private String objectiveName;
     private Long mappedProject;
@@ -50,8 +39,6 @@ public class Objective {
 
     private ObjectiveStatus objectiveStatus;
     private boolean objectiveIsActive;
-
-    //GETTERS AND SETTERS
 
     public Long getObjectiveId() {
         return objectiveId;

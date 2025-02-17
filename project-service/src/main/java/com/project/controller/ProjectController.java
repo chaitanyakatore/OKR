@@ -1,8 +1,8 @@
 package com.project.controller;
 
 import com.project.constants.ProjectStatus;
-import com.project.model.Objective;
 import com.project.model.Project;
+import com.project.model.Objective;
 import com.project.services.ProjectService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,8 +73,8 @@ public class ProjectController {
         List<Project> projects = projectService.getAllProjects().stream()
             .filter(p -> projectName == null || p.getProjectName().contains(projectName))
             .filter(p -> projectStatus == null || p.getProjectStatus() == projectStatus)
-            .filter(p -> isActive == null || p.getIsActive().equals(isActive))
-            .filter(p -> projectManager == null || p.getProjectManager().equals(projectManager))
+            .filter(p -> isActive == null || p.getActive().equals(isActive))
+            .filter(p -> projectManager == null || p.getProjectManagerId().equals(projectManager))
             .toList();
 
         return ResponseEntity.ok(projects);
@@ -84,5 +84,12 @@ public class ProjectController {
     public ResponseEntity<List<Objective>> getAllObjective(@PathVariable Long projectId){
         List<Objective> allObjectiveOfProject = projectService.getAllObjectiveAssociatedWithProject(projectId);
         return ResponseEntity.ok(allObjectiveOfProject);
+    }
+
+    // added the API to take the active project form the List of projectIds
+    @PostMapping("/active/count")
+    public ResponseEntity<Long> getActiveProjectsCount(@RequestBody List<Long> projectIds) {
+        long activeCount = projectService.getActiveProjectsCount(projectIds);
+        return ResponseEntity.ok(activeCount);
     }
 }

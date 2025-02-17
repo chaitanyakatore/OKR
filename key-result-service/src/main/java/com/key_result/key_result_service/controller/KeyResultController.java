@@ -4,9 +4,11 @@ import com.key_result.key_result_service.entity.KeyResult;
 import com.key_result.key_result_service.service.KeyResultService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/keyresults")
@@ -84,6 +86,18 @@ public class KeyResultController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeKeyResult(@PathVariable Long id) {
         keyResultService.removeKeyResult(id);
+    }
+
+    /**
+     *
+     *
+     * @param objectiveIds list of the objectives
+     * @return list of the keyResults
+     */
+    @PostMapping("/by-objectives")
+    public ResponseEntity<Map<String, List<KeyResult>>> getKeyResultsByObjectiveIds(@RequestBody List<Long> objectiveIds) {
+        Map<String, List<KeyResult>> keyResults = keyResultService.getKeyResultsByObjectiveIds(objectiveIds);
+        return ResponseEntity.ok(keyResults);
     }
 }
 

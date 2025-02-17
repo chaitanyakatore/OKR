@@ -32,6 +32,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/keycloak/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/keycloak/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/admin/**").hasRole(ADMIN)
+                        .requestMatchers("/api/auth/checkAuthority/admin/**")
+                        .hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/user/**").hasRole(USER)
                         .requestMatchers(HttpMethod.GET, "/api/admin-and-user/**").hasAnyRole(ADMIN,USER)
                         .anyRequest().authenticated());

@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface KeyResultRepository extends JpaRepository<KeyResult, Long> {
     List<KeyResult> findKeyResultByAssociatedObjectiveId(Long objectiveId);
+    List<KeyResult> findByObjectiveIdIn(List<Long> objectiveIds);
 }

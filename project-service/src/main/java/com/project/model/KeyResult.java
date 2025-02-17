@@ -56,4 +56,3 @@ public class KeyResult {
         this.dueDate = dueDate;
     }
 }
-

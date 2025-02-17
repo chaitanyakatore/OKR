@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController // Marks this class as a REST controller, enabling it to handle HTTP requests.
 @RequestMapping("/api/objective") // Base URL mapping for all endpoints in this controller.
@@ -110,12 +111,33 @@ public class ObjectiveController {
      * @param projectId - The ID of the project.
      * @return ResponseEntity containing the project progress (percentage) and HTTP status 200 (OK).
      */
-    @GetMapping("/project/progress/{projectId}")
-    public ResponseEntity<Double> getActiveObjectiveByTaskId(@PathVariable List projectId) {
-        LOGGER.info("Fetching objective with project associated with projectID: {}", projectId);
-        Double projectProgress = objectiveService.getProgress(projectId);
-        return ResponseEntity.ok(projectProgress);
+//    @GetMapping("/project/progress/{projectId}")
+//    public ResponseEntity<Double> getActiveObjectiveByTaskId(@PathVariable List projectId) {
+//        LOGGER.info("Fetching objective with project associated with projectID: {}", projectId);
+//        Double projectProgress = objectiveService.getProgress(projectId);
+//        return ResponseEntity.ok(projectProgress);
+//    }
+
+    /**
+     * Endpoint to fetch all project and active projects based on its objectives.
+     * @param projectIds - The IDs of the project.
+     * @return ResponseEntity containing the all project and active project of givenId and HTTP status 200 (OK).
+     */
+    @PostMapping("/by-projectIds")
+    public ResponseEntity<Map<String, List<Objective>>> getObjectivesByProjects(@RequestBody List<Long> projectIds) {
+        Map<String, List<Objective>> response = objectiveService.getObjectivesByProjects(projectIds);
+        return ResponseEntity.ok(response);
     }
 
+    /**
+     * Endpoint to fetch all projects based on its objectives.
+     * @param projectIds - The IDs of the project.
+     * @return ResponseEntity containing the all projects of givenId and HTTP status 200 (OK).
+     */
+    @PostMapping("/all/by-projects")
+    public ResponseEntity<List<Objective>> getAllObjectivesByProjectIds(@RequestBody List<Long> projectIds) {
+        List<Objective> response = objectiveService.getAllObjectiveByProjectIds(projectIds);
+        return ResponseEntity.ok(response);
+    }
 
 }

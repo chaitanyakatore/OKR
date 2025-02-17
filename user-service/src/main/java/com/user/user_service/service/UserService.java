@@ -15,4 +15,5 @@ public interface UserService {
     public List<Task> getAllTasksOfUser(Long userId);
     public List<Long> getAllProjectOfUser(Long userId);
     public List<Team> getAllTeamsOfUser(Long userId);
+
 }

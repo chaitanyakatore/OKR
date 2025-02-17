@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.project.constants.ProjectPriority;
 import com.project.constants.ProjectStatus;
+import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
 @Table(name = "projects")
@@ -21,19 +22,18 @@ public class Project {
     private String projectDescription;
 
     @Enumerated(EnumType.STRING)
-    private ProjectPriority projectPriority;
+    private ProjectPriority projectPriority = ProjectPriority.MEDIUM;
 
     @Enumerated(EnumType.STRING)
-    private ProjectStatus projectStatus;
+    private ProjectStatus projectStatus = ProjectStatus.NOT_STARTED;
 
-    @Column(nullable = false)
+    @Column
     private Boolean isActive = true;
+
+    private Long projectManagerId;
 
     @ElementCollection
     private List<Long> teamsInvolvedId;
-
-    @Transient
-    private List<Team> teams;
 
     @ElementCollection
     private List<Long> objectiveId;
@@ -41,13 +41,14 @@ public class Project {
     @Transient
     private List<Objective> objectives;
 
+    @CreationTimestamp
+    @Temporal(TemporalType.DATE)
+    @Column(updatable = false)
+    private Date projectCreatedAt;
+
     @Temporal(TemporalType.DATE)
     private Date projectDueDate;
 
-    @Column(nullable = false)
-    private Long projectManager;
-
-    // Getters and Setters
     public Long getProjectId() {
         return projectId;
     }
@@ -88,12 +89,20 @@ public class Project {
         this.projectStatus = projectStatus;
     }
 
-    public Boolean getIsActive() {
+    public Boolean getActive() {
         return isActive;
     }
 
-    public void setIsActive(Boolean isActive) {
-        this.isActive = isActive;
+    public void setActive(Boolean active) {
+        isActive = active;
+    }
+
+    public Long getProjectManagerId() {
+        return projectManagerId;
+    }
+
+    public void setProjectManagerId(Long projectManagerId) {
+        this.projectManagerId = projectManagerId;
     }
 
     public List<Long> getTeamsInvolvedId() {
@@ -102,14 +111,6 @@ public class Project {
 
     public void setTeamsInvolvedId(List<Long> teamsInvolvedId) {
         this.teamsInvolvedId = teamsInvolvedId;
-    }
-
-    public List<Team> getTeams() {
-        return teams;
-    }
-
-    public void setTeams(List<Team> teams) {
-        this.teams = teams;
     }
 
     public List<Long> getObjectiveId() {
@@ -128,6 +129,14 @@ public class Project {
         this.objectives = objectives;
     }
 
+    public Date getProjectCreatedAt() {
+        return projectCreatedAt;
+    }
+
+    public void setProjectCreatedAt(Date projectCreatedAt) {
+        this.projectCreatedAt = projectCreatedAt;
+    }
+
     public Date getProjectDueDate() {
         return projectDueDate;
     }
@@ -135,15 +144,5 @@ public class Project {
     public void setProjectDueDate(Date projectDueDate) {
         this.projectDueDate = projectDueDate;
     }
-
-    public Long getProjectManager() {
-        return projectManager;
-    }
-
-    public void setProjectManager(Long projectManager) {
-        this.projectManager = projectManager;
-    }
 }
-
-// Enums remain the same as in previous implementation
 

@@ -1,8 +1,10 @@
 package com.key_result.key_result_service.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.key_result.key_result_service.constants.KeyResultPriority;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.Date;
 import java.util.List;
@@ -20,6 +22,10 @@ public class KeyResult {
     private String keyResultName;
     private Long keyResultOwnerId;
     private Long associatedObjectiveId;
+    private int currentVal = 0;
+    private int TargetVal;
+
+    private KeyResultPriority keyResultPriority = KeyResultPriority.LOW;
 
     @ElementCollection
     private List<Long> keyResultAssociatedTasksId;
@@ -27,11 +33,20 @@ public class KeyResult {
     @Transient
     private List<Task> keyResultAssociatedTasks;
 
+    @CreationTimestamp
+    @Temporal(TemporalType.DATE)
+    @Column(updatable = false)
+    private Date keyResultCreatedAt;
+
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Temporal(TemporalType.TIMESTAMP)
     private Date keyResultDueDate;
 
+    private Long teamId;
+
     //GETTERS AND SETTERS
+
+
     public Long getKeyResultId() {
         return keyResultId;
     }
@@ -64,6 +79,30 @@ public class KeyResult {
         this.associatedObjectiveId = associatedObjectiveId;
     }
 
+    public int getCurrentVal() {
+        return currentVal;
+    }
+
+    public void setCurrentVal(int currentVal) {
+        this.currentVal = currentVal;
+    }
+
+    public int getTargetVal() {
+        return TargetVal;
+    }
+
+    public void setTargetVal(int targetVal) {
+        TargetVal = targetVal;
+    }
+
+    public KeyResultPriority getKeyResultPriority() {
+        return keyResultPriority;
+    }
+
+    public void setKeyResultPriority(KeyResultPriority keyResultPriority) {
+        this.keyResultPriority = keyResultPriority;
+    }
+
     public List<Long> getKeyResultAssociatedTasksId() {
         return keyResultAssociatedTasksId;
     }
@@ -80,11 +119,27 @@ public class KeyResult {
         this.keyResultAssociatedTasks = keyResultAssociatedTasks;
     }
 
+    public Date getProjectCreatedAt() {
+        return keyResultCreatedAt;
+    }
+
+    public void setProjectCreatedAt(Date projectCreatedAt) {
+        this.keyResultCreatedAt = projectCreatedAt;
+    }
+
     public Date getKeyResultDueDate() {
         return keyResultDueDate;
     }
 
     public void setKeyResultDueDate(Date keyResultDueDate) {
         this.keyResultDueDate = keyResultDueDate;
+    }
+
+    public Long getTeamId() {
+        return teamId;
+    }
+
+    public void setTeamId(Long teamId) {
+        this.teamId = teamId;
     }
 }

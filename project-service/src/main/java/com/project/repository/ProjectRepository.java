@@ -9,6 +9,8 @@ import org.springframework.stereotype.Repository;
 import com.project.constants.ProjectStatus;
 import com.project.model.Project;
 
+import java.util.List;
+
 
 @Repository
 public interface ProjectRepository extends JpaRepository<Project, Long> {
@@ -19,6 +21,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     // Additional query methods can be added here
     long countByProjectStatus(ProjectStatus status);
     long countByIsActive(Boolean isActive);
+    long countByProjectIdInAndIsActiveTrue(List<Long> projectIds);
 }
 
 

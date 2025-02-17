@@ -3,6 +3,7 @@ package com.key_result.key_result_service.service;
 import com.key_result.key_result_service.entity.KeyResult;
 
 import java.util.List;
+import java.util.Map;
 
 public interface KeyResultService {
 
@@ -12,4 +13,5 @@ public interface KeyResultService {
     public List<KeyResult> getKeyResultsByObjectiveId(Long objectiveId);
     public KeyResult updateKeyResult(Long id, KeyResult toUpdateKeyResult);
     public void removeKeyResult(Long id);
+    public Map<String, List<KeyResult>> getKeyResultsByObjectiveIds(List<Long> objectiveIds);
 }

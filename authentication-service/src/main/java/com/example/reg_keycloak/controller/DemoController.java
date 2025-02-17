@@ -17,8 +17,8 @@ public class DemoController {
     }
 
     @GetMapping("/admin")
-    public ResponseEntity<String> sayHelloToAdmin() {
-        return ResponseEntity.ok("Hello Admin");
+    public Boolean sayHelloToAdmin() {
+        return true;
     }
 
     @GetMapping("/user")

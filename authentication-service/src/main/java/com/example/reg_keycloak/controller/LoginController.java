@@ -24,6 +24,10 @@ public class LoginController {
         this.jwtConverter = jwtConverter;
         this.jwtDecoder = jwtDecoder;
     }
+    @GetMapping("/checkAuthority/{credential}/token")
+    public boolean checkAuthority(@RequestParam String token) {
+        return true;
+    }
 
     @PostMapping("/roles")
     public Map<String, Object> getRolesAndToken(@RequestBody Map<String, String> request) {

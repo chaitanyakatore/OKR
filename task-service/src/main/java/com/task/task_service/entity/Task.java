@@ -2,13 +2,11 @@ package com.task.task_service.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.task.task_service.constants.TaskStatus;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.Date;
 
@@ -25,12 +23,18 @@ public class Task {
     private String taskDescription;
     private Long taskOwner;
 
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @CreationTimestamp
+    @Temporal(TemporalType.DATE)
+    @Column(updatable = false)
     private Date taskStartDate;
+
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date taskDueDate;
+
     private String taskTag;
+
     private boolean taskIsActive;
+
     private Long taskAssociatedKeyResult;
     private Long taskAssociatedObjective;
     private TaskStatus taskStatus;

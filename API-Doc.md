@@ -320,19 +320,28 @@ GET /api/projects/1
 **Response:**
 - **200 OK:** return list of objectives.
 
+----------------------------------------------------------------------------------------------------------------------------
+
 ## Key Result Endpoints
 
-### 17. Create a New Key Result
+### 21. Create a New Key Result
 
 **Endpoint:** `POST /api/key-result`
 
 **Request Body:** (JSON)
 ```json
 {
-  "keyResultName": "string",
-  "objectiveId": "long",
-  "status": "enum(KeyResultStatus)"
+  "keyResultName": "Launch New Feature",
+  "keyResultOwnerId": 127,
+  "associatedObjectiveId": 2,
+  "currentVal": 0,
+  "TargetVal": 100,
+  "keyResultPriority": "MEDIUM",
+  "keyResultAssociatedTasksId": [109, 110],
+  "keyResultDueDate": "2025-11-01",
+  "teamId": 205
 }
+
 ```
 
 **Response:**
@@ -345,43 +354,72 @@ GET /api/projects/1
 **Response:**
 - **200 OK**: Returns a list of all key results
 
-### 19. Get a Key Result by ID
+### 22. Get a Key Result by ID
 
 **Endpoint:** `GET /api/key-result/{id}`
+
+**Path Parameters:** 
+- **id** (long, required): id of the key Result.
 
 **Response:**
 - **200 OK**: Returns the key result details
 - **404 Not Found**: Key result not found
 
-### 20. Update a Key Result
+### 23. Update a Key Result
 
 **Endpoint:** `PUT /api/key-result/{id}`
+
+**Path Parameters:** 
+- **id** (long, required): id of the key Result.
 
 **Request Body:** (JSON)
 ```json
 {
-  "keyResultName": "Updated Key Result",
-  "status": "COMPLETED"
+  "keyResultName": "Launch New Feature",
+  "keyResultOwnerId": 127,
+  "associatedObjectiveId": 2,
+  "currentVal": 0,
+  "TargetVal": 100,
+  "keyResultPriority": "MEDIUM",
+  "keyResultAssociatedTasksId": [109, 110],
+  "keyResultDueDate": "2025-11-01",
+  "teamId": 205
 }
 ```
 
 **Response:**
 - **200 OK**: Returns the updated key result
 
-### 21. Delete a Key Result
+### 24. Delete a Key Result
 
 **Endpoint:** `DELETE /api/key-result/{id}`
+
+**Path Parameters:** 
+- **id** (long, required): id of the key Result.
 
 **Response:**
 - **204 No Content**: Key result deleted successfully
 
-## Error Handling
+### 25. Get all Key Results associated with a specific Objective ID
 
-Common error responses across all endpoints:
+**Endpoint:** `GET /objective/{objectiveId}`
 
-- **400 Bad Request**: Invalid input
-- **404 Not Found**: Resource not found
-- **500 Internal Server Error**: Unexpected errors
+**Path Parameters:** 
+- **objectiveId** (long, required): objectiveId of the objective.
+
+**Response:**
+- **200 OK**: List of Key results.
+
+### 26. Get all Key Results associated with a specific Objective ID
+
+**Endpoint:** `POST /by-objectives`
+
+**Request Body:**
+```json
+[1,2,3]
+```
+**Response:**
+- **200 OK**: List of Key results.
 
 ## Notes
 

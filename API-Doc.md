@@ -573,6 +573,282 @@ Approves a specific task.
 - **200 OK**: Task approved successfully
 - **404 Not Found**: Task not found
 
+--------------------------------------------------------------------------------------------------------------------------------
+
+# User Service API Documentation
+
+## Base URL
+```
+/api/users
+```
+
+## Endpoints
+
+### 1. Create a New User
+Creates a new user.
+
+**Endpoint:** `POST /api/users`
+
+**Request Body:**
+```json
+{
+  "userName": "Alice Smith",
+  "userEmail": "alice.smith@example.com",
+  "userDesignation": "Project Manager",
+  "userProfilePhoto": "https://res.cloudinary.com/demo/image/upload/v1616616565/sample2.jpg",
+  "userPhoneNo": 1234567890,
+  "userAddress": "456, Oak Road, Another City, USA",
+  "userTimeZone": "GMT+2:00",
+  "userJoiningDate": "2024-08-15",
+  "userIsNotificationAlert": true,
+  "userRole": "MANAGER",
+  "usertaskAssigned": [4, 5, 6],
+  "userInvolvedTeamsId": [2],
+  "userProject": [1],
+  "userManagerProjectId": [3],
+  "userTeamLeaderProjectId": [4],
+  "userTeamMemberProjectId": [5]
+}
+```
+
+**Response:**
+```json
+{
+  "userName": "Alice Smith",
+  "userEmail": "alice.smith@example.com",
+  "userDesignation": "Project Manager",
+  "userProfilePhoto": "https://res.cloudinary.com/demo/image/upload/v1616616565/sample2.jpg",
+  "userPhoneNo": 1234567890,
+  "userAddress": "456, Oak Road, Another City, USA",
+  "userTimeZone": "GMT+2:00",
+  "userJoiningDate": "2024-08-15",
+  "userIsNotificationAlert": true,
+  "userRole": "MANAGER",
+  "usertaskAssigned": [4, 5, 6],
+  "userInvolvedTeamsId": [2],
+  "userProject": [1],
+  "userManagerProjectId": [3],
+  "userTeamLeaderProjectId": [4],
+  "userTeamMemberProjectId": [5]
+}
+```
+
+### 2. Get All Users
+Fetches all users.
+
+**Endpoint:** `GET /api/users`
+
+**Response:**
+```json
+[
+  {
+      "userName": "Alice Smith",
+      "userEmail": "alice.smith@example.com",
+      "userDesignation": "Project Manager",
+      "userProfilePhoto": "https://res.cloudinary.com/demo/image/upload/v1616616565/sample2.jpg",
+      "userPhoneNo": 1234567890,
+      "userAddress": "456, Oak Road, Another City, USA",
+      "userTimeZone": "GMT+2:00",
+      "userJoiningDate": "2024-08-15",
+      "userIsNotificationAlert": true,
+      "userRole": "MANAGER",
+      "usertaskAssigned": [4, 5, 6],
+      "userInvolvedTeamsId": [2],
+      "userProject": [1],
+      "userManagerProjectId": [3],
+      "userTeamLeaderProjectId": [4],
+      "userTeamMemberProjectId": [5]
+  }
+]
+```
+
+### 3. Get User by ID
+Fetches a user by their ID.
+
+**Endpoint:** `GET /api/users/{userId}`
+
+**Response:**
+```json
+{
+  "userName": "Alice Smith",
+  "userEmail": "alice.smith@example.com",
+  "userDesignation": "Project Manager",
+  "userProfilePhoto": "https://res.cloudinary.com/demo/image/upload/v1616616565/sample2.jpg",
+  "userPhoneNo": 1234567890,
+  "userAddress": "456, Oak Road, Another City, USA",
+  "userTimeZone": "GMT+2:00",
+  "userJoiningDate": "2024-08-15",
+  "userIsNotificationAlert": true,
+  "userRole": "MANAGER",
+  "usertaskAssigned": [4, 5, 6],
+  "userInvolvedTeamsId": [2],
+  "userProject": [1],
+  "userManagerProjectId": [3],
+  "userTeamLeaderProjectId": [4],
+  "userTeamMemberProjectId": [5]
+}
+```
+
+### 4. Update User by ID
+Updates a user by their ID.
+
+**Endpoint:** `PUT /api/users/{userId}`
+
+**Request Body:**
+```json
+{
+  "userName": "Alice Smith",
+  "userEmail": "alice.smith@example.com",
+  "userDesignation": "Project Manager",
+  "userProfilePhoto": "https://res.cloudinary.com/demo/image/upload/v1616616565/sample2.jpg",
+  "userPhoneNo": 1234567890,
+  "userAddress": "456, Oak Road, Another City, USA",
+  "userTimeZone": "GMT+2:00",
+  "userJoiningDate": "2024-08-15",
+  "userIsNotificationAlert": false,
+  "userRole": "MANAGER",
+  "usertaskAssigned": [4, 5, 6],
+  "userInvolvedTeamsId": [2],
+  "userProject": [1],
+  "userManagerProjectId": [3],
+  "userTeamLeaderProjectId": [4],
+  "userTeamMemberProjectId": [5]
+}
+```
+
+**Response:**
+```json
+{
+  "userName": "Alice Smith",
+  "userEmail": "alice.smith@example.com",
+  "userDesignation": "Project Manager",
+  "userProfilePhoto": "https://res.cloudinary.com/demo/image/upload/v1616616565/sample2.jpg",
+  "userPhoneNo": 1234567890,
+  "userAddress": "456, Oak Road, Another City, USA",
+  "userTimeZone": "GMT+2:00",
+  "userJoiningDate": "2024-08-15",
+  "userIsNotificationAlert": false,
+  "userRole": "MANAGER",
+  "usertaskAssigned": [4, 5, 6],
+  "userInvolvedTeamsId": [2],
+  "userProject": [1],
+  "userManagerProjectId": [3],
+  "userTeamLeaderProjectId": [4],
+  "userTeamMemberProjectId": [5]
+}
+```
+
+### 5. Delete User by ID
+Deletes a user by their ID.
+
+**Endpoint:** `DELETE /api/users/{userId}`
+
+**Response:** HTTP 204 No Content
+
+### 6. Get Active Projects Count for a User
+Fetches the count of active projects for a given user.
+
+**Endpoint:** `GET /api/users/projects/active/count`
+
+**Query Parameters:**
+- `userId` (Long, required)
+- `userRole` (String, required)
+
+**Response:**
+```json
+{
+  "activeProjectsCount": 5
+}
+```
+
+### 7. Get All Objectives by User ID and Role
+Fetches all objectives for a given user ID and role.
+
+**Endpoint:** `POST /api/users/objectives`
+
+**Query Parameters:**
+- `userId` (Long, required)
+- `userRole` (String, required)
+
+**Response:**
+```json
+[
+  {
+        "objectiveId": 1,
+        "objectiveName": "Redesign Website Layout",
+        "mappedProject": 1,
+        "assignedToTeam": [
+            105,
+            106
+        ],
+        "keyResultIds": [
+            305,
+            306
+        ],
+        "keyResult": [],
+        "objectiveTaskIds": [],
+        "objectiveTaskList": [],
+        "objectiveDueDate": "2025-06-30",
+        "objectiveStatus": "ON_TRACK",
+        "objectiveIsActive": false,
+        "projectCreatedAt": null
+    }
+]
+```
+
+### 8. Get Active Objectives by User ID and Role
+Fetches all active objectives for a given user ID and role.
+
+**Endpoint:** `POST /api/users/objectives/active`
+
+**Query Parameters:**
+- `userId` (Long, required)
+- `userRole` (String, required)
+
+**Response:**
+```json
+{
+  "activeObjectives": [
+    {
+      "id": 101,
+      "title": "Increase Revenue",
+      "status": "Active"
+    }
+  ],
+  "allObjectives": [
+    {
+      "id": 102,
+      "title": "Enhance Customer Satisfaction",
+      "status": "Completed"
+    }
+  ]
+}
+```
+
+### 9. Get Key Results for Projects
+Fetches key results for a list of project IDs.
+
+**Endpoint:** `POST /api/users/key-results`
+
+**Request Body:**
+```json
+{
+  "projectIds": [1, 2, 3]
+}
+```
+
+**Response:**
+```json
+{
+  "keyResults": [
+    {
+      "id": 201,
+      "title": "Increase Sales by 20%",
+      "status": "In Progress"
+    }
+  ]
+}
+```
 
 ## Notes
 

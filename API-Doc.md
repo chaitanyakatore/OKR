@@ -1,13 +1,4 @@
-# Project Management API Documentation
-
-## Table of Contents
-- [Base URL](#base-url)
-- [Authentication](#authentication)
-- [Project Endpoints](#project-endpoints)
-- [Objective Endpoints](#objective-endpoints)
-- [Key Result Endpoints](#key-result-endpoints)
-- [Error Handling](#error-handling)
-- [Notes](#notes)
+# Project Service API Documentation
 
 ## Base URL
 
@@ -26,11 +17,18 @@ No authentication details provided.
 **Request Body:** (JSON)
 ```json
 {
-  "projectName": "string",
-  "projectStatus": "enum(ProjectStatus)",
-  "isActive": "boolean",
-  "projectManagerId": "long"
+    "projectId": 1,
+    "projectName": "New Website Development",
+    "projectDescription": "Develop a fully responsive website with an e-commerce platform.",
+    "projectPriority": "MEDIUM",
+    "projectStatus": "NOT_STARTED",
+    "projectManagerId": 101,
+    "teamsInvolvedId": [1, 2, 3],
+    "objectiveId": [201, 202, 203],
+    "projectCreatedAt": "2025-02-11",
+    "projectDueDate": "2025-02-28",
 }
+
 ```
 
 **Response:**
@@ -41,10 +39,16 @@ No authentication details provided.
 ```json
 POST /api/projects/new
 {
-  "projectName": "New Project",
-  "projectStatus": "ACTIVE",
-  "isActive": true,
-  "projectManagerId": 123
+    "projectId": 1,
+    "projectName": "New Website Development",
+    "projectDescription": "Develop a fully responsive website with an e-commerce platform.",
+    "projectPriority": "MEDIUM",
+    "projectStatus": "NOT_STARTED",
+    "projectManagerId": 101,
+    "teamsInvolvedId": [1, 2, 3],
+    "objectiveId": [201, 202, 203],
+    "projectCreatedAt": "2025-02-11",
+    "projectDueDate": "2025-02-28",
 }
 ```
 
@@ -59,19 +63,27 @@ POST /api/projects/new
 ```json
 [
   {
-    "id": 1,
-    "projectName": "New Project",
-    "projectStatus": "ACTIVE",
-    "isActive": true,
-    "projectManagerId": 123
+    "projectId": 1,
+    "projectName": "New Website Development",
+    "projectDescription": "Develop a fully responsive website with an e-commerce platform.",
+    "projectPriority": "MEDIUM",
+    "projectStatus": "NOT_STARTED",
+    "projectManagerId": 101,
+    "teamsInvolvedId": [1, 2, 3],
+    "objectiveId": [201, 202, 203],
+    "projectCreatedAt": "2025-02-11",
+    "projectDueDate": "2025-02-28",
   }
 ]
 ```
 
-### 3. Get a Project by ID
+### 3. Get a Project by project ID
 
-**Endpoint:** `GET /api/projects/{id}`
+**Endpoint:** `GET /api/projects/{id}` 
 
+**Path Parameters:** 
+- **id** (long, required): ID of the project.
+  
 **Response:**
 - **200 OK**: Returns the project details
 - **404 Not Found**: Project not found
@@ -81,16 +93,26 @@ POST /api/projects/new
 GET /api/projects/1
 ```
 
-### 4. Update a Project
+### 4. Update a Project by projectId
 
 **Endpoint:** `PUT /api/projects/{id}`
+
+**Path Parameters:** 
+- **id** (long, required): ID of the project.
 
 **Request Body:** (JSON)
 ```json
 {
-  "projectName": "Updated Project",
-  "projectStatus": "COMPLETED",
-  "isActive": false
+    "projectId": 1,
+    "projectName": "New Website Development",
+    "projectDescription": "Develop a fully responsive website with an e-commerce platform.",
+    "projectPriority": "MEDIUM",
+    "projectStatus": "NOT_STARTED",
+    "projectManagerId": 101,
+    "teamsInvolvedId": [1, 2, 3],
+    "objectiveId": [201, 202, 203],
+    "projectCreatedAt": "2025-02-11",
+    "projectDueDate": "2025-02-28",
 }
 ```
 
@@ -98,9 +120,12 @@ GET /api/projects/1
 - **200 OK**: Returns the updated project
 - **404 Not Found**: Project not found
 
-### 5. Delete a Project
+### 5. Delete a Project by project Id
 
 **Endpoint:** `DELETE /api/projects/{id}`
+
+**Path Parameters:** 
+- **id** (long, required): ID of the project.
 
 **Response:**
 - **200 OK**: Project deleted
@@ -117,6 +142,9 @@ GET /api/projects/1
 
 **Endpoint:** `GET /api/projects/dashboard/status/{status}`
 
+**Path Parameters:** 
+- **status** (enum, required): Status of projects to count (ACTIVE, INACTIVE, COMPLETED).
+
 **Response:**
 - **200 OK**: Returns the count of projects with the specified status
 - **400 Bad Request**: Invalid status parameter
@@ -125,10 +153,13 @@ GET /api/projects/1
 
 **Endpoint:** `GET /api/projects/dashboard/active/{isActive}`
 
+**Path Parameters:** 
+- **isActive** (boolean, required): isActive of project to see project active(true, false).
+
 **Response:**
 - **200 OK**: Returns the count of active/inactive projects
 
-### 9. Search Projects
+### 9. Search Projects by attribute name
 
 **Endpoint:** `GET /api/projects/search`
 
@@ -141,9 +172,12 @@ GET /api/projects/1
 **Response:**
 - **200 OK**: Returns a filtered list of projects
 
-### 10. Get Objectives by Project ID
+### 10. Get Objectives of project by Project ID
 
 **Endpoint:** `GET /api/projects/objective/{projectId}`
+
+**Path Parameters:** 
+- **projectId** (long, required): projectId is the Id project.
 
 **Response:**
 - **200 OK**: Returns a list of objectives for the project
@@ -160,7 +194,14 @@ GET /api/projects/1
 **Response:**
 - **200 OK**: Returns the count of active projects from the provided IDs
 
+-----------------------------------------------------------------------------------------------------------------------------
+
 ## Objective Endpoints
+
+## Base URL
+
+`/api/objective`
+
 
 ### 12. Create a New Objective
 
@@ -169,9 +210,15 @@ GET /api/projects/1
 **Request Body:** (JSON)
 ```json
 {
-  "objectiveName": "string",
-  "projectId": "long",
-  "status": "enum(ObjectiveStatus)"
+  "objectiveId": 1
+  "objectiveName": "Launch New Mobile App",
+  "mappedProject": 4,
+  "assignedToTeam": [107, 108],
+  "keyResultIds": [307, 308],
+  "objectiveStartDate": "2025-09-10",
+  "objectiveDueDate": "2025-09-10",
+  "objectiveStatus": "AT_RISK",
+  "objectiveIsActive": true
 }
 ```
 
@@ -183,25 +230,38 @@ GET /api/projects/1
 **Endpoint:** `GET /api/objective`
 
 **Response:**
-- **200 OK**: Returns a list of all objectives
+- **200 OK**: Returns a list of all objectives with associated Key Results
 
 ### 14. Get an Objective by ID
 
 **Endpoint:** `GET /api/objective/{id}`
 
+**Path Parameters:** 
+- **id** (long, required): id is the Id of objective.
+
 **Response:**
-- **200 OK**: Returns the objective details
+- **200 OK**: Returns the objective details with associated key Results 
 - **404 Not Found**: Objective not found
 
 ### 15. Update an Objective
 
 **Endpoint:** `PUT /api/objective/{id}`
 
+**Path Parameters:** 
+- **id** (long, required): ID of the objective.
+
 **Request Body:** (JSON)
 ```json
 {
-  "objectiveName": "Updated Objective",
-  "status": "COMPLETED"
+  "objectiveId": 1
+  "objectiveName": "Launch New Mobile App",
+  "mappedProject": 4,
+  "assignedToTeam": [107, 108],
+  "keyResultIds": [307, 308],
+  "objectiveStartDate": "2025-09-10",
+  "objectiveDueDate": "2025-09-10",
+  "objectiveStatus": "AT_RISK",
+  "objectiveIsActive": true
 }
 ```
 
@@ -212,8 +272,53 @@ GET /api/projects/1
 
 **Endpoint:** `DELETE /api/objective/{id}`
 
+**Path Parameters:** 
+- **id** (long, required): ID of the objective.
+
 **Response:**
 - **204 No Content**: Objective deleted successfully
+
+### 17. Get all objectives associated with a specific project ID.
+
+**Endpoint:** `GET /project/{projectId}`
+
+**Path Parameters:** 
+- **projectId** (long, required): projectId of the project.
+
+**Response:**
+- **200 OK:** return List of objectives associated with project.
+
+### 18. progress of a project based on its objectives.
+
+**Endpoint:** `GET /project/progress/{projectId}`
+
+**Path Parameters:** 
+- **projectId** (long, required): projectId of the project.
+
+**Response:**
+- **200 OK:** return progress of project.
+
+### 19. get all objectives and active objectives based on projectIds list.
+
+**Endpoint:** `POST /by-projectIds`
+
+**Request Body:** (JSON)
+```json 
+[1,2,3]
+````
+**Response:**
+- **200 OK:** return map of list activeObjectives and allObjectives.
+
+### 20. get all objectives  based on its projectsIds.
+
+**Endpoint:** `POST /all/by-projects`
+
+**Request Body:** (JSON)
+```json 
+[1,2,3]
+````
+**Response:**
+- **200 OK:** return list of objectives.
 
 ## Key Result Endpoints
 

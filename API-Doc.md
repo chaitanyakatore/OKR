@@ -324,6 +324,11 @@ GET /api/projects/1
 
 ## Key Result Endpoints
 
+## Base URL
+
+`/api/keyresults`
+
+
 ### 21. Create a New Key Result
 
 **Endpoint:** `POST /api/key-result`
@@ -420,6 +425,154 @@ GET /api/projects/1
 ```
 **Response:**
 - **200 OK**: List of Key results.
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+
+# Task Service API Documentation
+
+## Base URL
+```
+/api/tasks
+```
+
+## Endpoints
+
+### 27. Create a New Task
+Creates a new task in the system.
+
+**Endpoint:** `POST /api/tasks`
+
+**Request Body:**
+```json
+{
+  "taskName": "Complete Sprint Planning",
+  "taskOwnerId": 101,
+  "associatedObjectiveId": 5,
+  "associatedKeyResultId": 12,
+  "taskStatus": "IN_PROGRESS",
+  "taskPriority": "HIGH",
+  "taskDueDate": "2025-12-01",
+  "assignedUserId": 204
+}
+```
+
+**Response:**
+- **201 Created**: Returns the created task
+
+### 28. Get All Tasks
+Retrieves all tasks from the system.
+
+**Endpoint:** `GET /api/tasks`
+
+**Response:**
+- **200 OK**: Returns a list of all tasks
+
+### 29. Get a Task by ID
+Retrieves a specific task by its ID.
+
+**Endpoint:** `GET /api/tasks/{id}`
+
+**Path Parameters:**
+- `id` (long, required): ID of the task
+
+**Response:**
+- **200 OK**: Returns the task details
+- **404 Not Found**: Task not found
+
+### 30. Update a Task
+Updates an existing task.
+
+**Endpoint:** `PUT /api/tasks/{id}`
+
+**Path Parameters:**
+- `id` (long, required): ID of the task
+
+**Request Body:**
+```json
+{
+  "taskName": "Complete Sprint Planning",
+  "taskOwnerId": 101,
+  "associatedObjectiveId": 5,
+  "associatedKeyResultId": 12,
+  "taskStatus": "IN_PROGRESS",
+  "taskPriority": "HIGH",
+  "taskDueDate": "2025-12-01",
+  "assignedUserId": 204
+}
+```
+
+**Response:**
+- **200 OK**: Returns the updated task
+- **404 Not Found**: Task not found
+
+### 31. Delete a Task
+Deletes a specific task.
+
+**Endpoint:** `DELETE /api/tasks/{id}`
+
+**Path Parameters:**
+- `id` (long, required): ID of the task
+
+**Response:**
+- **204 No Content**: Task successfully deleted
+- **404 Not Found**: Task not found
+
+### 32. Get All Tasks by Objective ID
+Retrieves all tasks associated with a specific objective.
+
+**Endpoint:** `GET /api/tasks/objective/{objectiveId}`
+
+**Path Parameters:**
+- `objectiveId` (long, required): ID of the associated objective
+
+**Response:**
+- **200 OK**: Returns a list of tasks for the specified objective
+
+### 33. Get All Tasks by Key Result ID
+Retrieves all tasks associated with a specific key result.
+
+**Endpoint:** `GET /api/tasks/keyresult/{keyresultId}`
+
+**Path Parameters:**
+- `keyresultId` (long, required): ID of the associated key result
+
+**Response:**
+- **200 OK**: Returns a list of tasks for the specified key result
+
+### 34. Get All Tasks by User ID
+Retrieves all tasks assigned to a specific user.
+
+**Endpoint:** `GET /api/tasks/users/{userId}`
+
+**Path Parameters:**
+- `userId` (long, required): ID of the user
+
+**Response:**
+- **200 OK**: Returns a list of tasks assigned to the user
+
+### 35. Get All Active Tasks by User ID
+Retrieves all active tasks assigned to a specific user.
+
+**Endpoint:** `GET /api/tasks/active-task/users/{userId}`
+
+**Path Parameters:**
+- `userId` (long, required): ID of the user
+
+**Response:**
+- **200 OK**: Returns a list of active tasks assigned to the user
+
+### 36. Approve a Task
+Approves a specific task.
+
+**Endpoint:** `PUT /api/tasks/{taskId}/approve`
+
+**Path Parameters:**
+- `taskId` (long, required): ID of the task
+
+**Response:**
+- **200 OK**: Task approved successfully
+- **404 Not Found**: Task not found
+
 
 ## Notes
 
